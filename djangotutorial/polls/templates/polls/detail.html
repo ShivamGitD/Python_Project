@@ -14,12 +14,23 @@
 
 <body>
   <div class="container">
-    <h1>{{ question.question_text }}</h1>
-    <ul class="list-group">
-      {% for choice in question.choice_set.all %}
-      <li class="list-group-item">{{ choice.choice_text }}</li>
-      {% endfor %}
-    </ul>
+    <form class="row g-3" action="{% url 'polls:vote' question.id %}" method="post">
+      {% csrf_token %}
+      <fieldset>
+        <legend>
+          <h1>{{ question.question_text }}</h1>
+        </legend>
+        {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+        {% for choice in question.choice_set.all %}
+        <input class="form-check-input" type="radio" name="choice" id="choice{{ forloop.counter }}"
+          value="{{ choice.id }}">
+        <label class="form-check-label" for="choice{{ forloop.counter }}">{{ choice.choice_text }}</label><br>
+        {% endfor %}
+      </fieldset>
+      <div class="col-auto">
+        <input type="submit" class="btn btn-primary" value="Vote">
+      </div>
+    </form>
   </div>
 </body>
 
